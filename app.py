@@ -54,3 +54,48 @@ feature = st.selectbox(
     ["sepal_length", "sepal_width", "petal_length", "petal_width"],
 )
 st.line_chart(df[feature].head(sample_size))
+
+# filter data by species
+species = st.radio("Select species:", df["species"].unique())
+filtered_df = df[df["species"] == species]
+st.dataframe(filtered_df)
+
+# multi select for multiple species
+species_options = st.multiselect(
+    "Select species:", df["species"].unique(), default=df["species"].unique()
+)
+filtered_df = df[df["species"].isin(species_options)]
+st.dataframe(filtered_df)
+
+# Step 4: Organise Interactive Elements in a Sidebar
+with st.sidebar:
+    st.header("Controls")
+    sample_size = st.slider("Number of samples:", 10, len(df), 20)
+    feature = st.selectbox("Feature:", df.columns[:-1])
+    species = st.multiselect(
+        "Species:", df["species"].unique(), default=df["species"].unique()
+    )
+
+# Add Titles, Headers, Subheaders and Markdown
+st.title("🌸 Iris Dataset Dashboard")
+st.header("A quick tour of flower data analysis")
+st.subheader("Visual Insights and Metrics")
+st.markdown("Hand-crafted with Streamlit.")
+
+
+# 2. Page-Wide Customization with st.set_page_config
+st.set_page_config(
+    page_title="Iris Dataset Dashboard",
+    page_icon="🌸",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# 3. Layout: Columns and Containers for Clean Organization
+col1, col2 = st.columns(2)
+with col1:
+    st.write("## Sepal Features")
+    st.line_chart(df[["sepal_length", "sepal_width"]])
+with col2:
+    st.write("## Petal Features")
+    st.area_chart(df[["petal_length", "petal_width"]])
